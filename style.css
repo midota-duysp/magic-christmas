@@ -1,0 +1,690 @@
+:root {
+    --primary-gold: #FFD700;
+    --christmas-red: #D32F2F;
+    --glass-bg: rgba(20, 20, 20, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+body { 
+    margin: 0; overflow: hidden; 
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%); 
+    font-family: 'Quicksand', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+#canvas-container { 
+    background: #000;
+    width: 100%; 
+    height: 100vh; 
+    display: block; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    z-index: 1;
+    will-change: contents;
+    transform: translateZ(0);
+}
+
+/* --- LOADING --- */
+#loading-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--primary-gold); 
+    transition: opacity 0.5s ease;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+.loader { 
+    width: 48px; 
+    height: 48px; 
+    border: 5px solid #FFF; 
+    border-bottom-color: var(--primary-gold); 
+    border-radius: 50%; 
+    animation: rotation 1s linear infinite; 
+    margin-bottom: 20px;
+    will-change: transform;
+}
+@keyframes rotation { 
+    0% { transform: rotate(0deg) translateZ(0); } 
+    100% { transform: rotate(360deg) translateZ(0); } 
+}
+
+/* --- WELCOME & SETTINGS --- */
+#welcome-layer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: radial-gradient(circle at center, #0f2d1e 0%, #05140e 100%);
+    backdrop-filter: blur(5px); 
+    transition: opacity 0.8s ease;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+.title-main { 
+    font-family: 'Mountains of Christmas', cursive; 
+    font-size: 4.5rem; 
+    color: var(--primary-gold); 
+    margin: 0; 
+    text-shadow: 0 0 20px rgba(255,0,0,0.8); 
+    animation: floatText 3s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
+}
+.subtitle { 
+    color: #FFF; 
+    margin-bottom: 30px; 
+    font-size: 1.1rem; 
+    opacity: 0.8; 
+    letter-spacing: 2px; 
+}
+
+/* Music Selector Styles */
+.music-settings { display: flex; gap: 20px; margin-bottom: 40px; }
+.music-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px 20px; border-radius: 15px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    width: 100px; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, background, border-color, box-shadow;
+    transform: translateZ(0);
+}
+.music-card i { font-size: 1.5rem; color: #ccc; transition: color 0.3s ease; }
+.music-card span { font-size: 0.8rem; color: #ccc; font-weight: 600; transition: color 0.3s ease; }
+.music-card.active {
+    background: rgba(255, 215, 0, 0.15); border-color: var(--primary-gold);
+    transform: translateY(-5px) translateZ(0); 
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+}
+.music-card.active i, .music-card.active span { color: var(--primary-gold); }
+.music-card:hover { 
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px) translateZ(0);
+}
+
+.btn-group { display: flex; gap: 20px; margin-bottom: 30px; }
+.magic-btn {
+    background: transparent; color: #FFF; font-family: 'Quicksand', sans-serif;
+    font-size: 1.2rem; font-weight: 700; padding: 15px 40px; 
+    border: 2px solid var(--primary-gold); border-radius: 50px; cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: background, color, box-shadow, transform;
+    transform: translateZ(0);
+}
+.magic-btn:hover { 
+    background: var(--primary-gold); 
+    color: #000; 
+    box-shadow: 0 0 40px var(--primary-gold);
+    transform: translateY(-2px) translateZ(0);
+}
+.magic-btn.secondary { border-color: #fff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+.magic-btn.secondary:hover { 
+    background: #fff; 
+    color: #000; 
+    box-shadow: 0 0 40px #fff;
+    transform: translateY(-2px) translateZ(0);
+}
+
+/* --- GIFT BOX STYLES (NEW) --- */
+.gift-container {
+    margin-top: 20px;
+    cursor: pointer;
+    text-align: center;
+    animation: bounceGift 2s infinite ease-in-out;
+    position: relative;
+    will-change: transform;
+    transform: translateZ(0);
+}
+.gift-icon {
+    font-size: 3.5rem;
+    color: #D32F2F;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    display: inline-block;
+    transform: translateZ(0);
+}
+.gift-label {
+    display: block; color: #FFD700; font-family: 'Mountains of Christmas', cursive;
+    font-size: 1.2rem; margin-top: 5px; opacity: 0.8;
+}
+.gift-container:hover .gift-icon { 
+    transform: scale(1.2) rotate(10deg) translateZ(0); 
+}
+@keyframes bounceGift {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-10px) translateZ(0); }
+}
+
+/* --- WISH MODAL (NEW) --- */
+#wish-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 9999;
+    display: none; justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 0.5s ease;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+#wish-modal.active { display: flex; opacity: 1; }
+.wish-card {
+    background: linear-gradient(135deg, #fffdf0 0%, #fff 100%);
+    width: 90%; max-width: 450px; padding: 40px;
+    border-radius: 20px; text-align: center;
+    border: 4px solid #D32F2F;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+    transform: scale(0.5) translateZ(0); 
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    will-change: transform;
+}
+#wish-modal.active .wish-card { transform: scale(1) translateZ(0); }
+.wish-content { font-family: 'Mountains of Christmas', cursive; font-size: 2rem; color: #0f2d1e; line-height: 1.4; margin: 20px 0; }
+.wish-close {
+    margin-top: 20px; background: #D32F2F; color: #fff; border: none;
+    padding: 10px 30px; border-radius: 30px; font-size: 1rem; cursor: pointer;
+    font-family: 'Quicksand', sans-serif; transition: 0.3s;
+}
+.wish-close:hover { background: #b71c1c; transform: scale(1.05); }
+.wish-decoration { position: absolute; font-size: 2rem; }
+
+/* --- EXIT BUTTON --- */
+#exit-btn {
+    position: fixed; top: 20px; left: 20px; z-index: 1000;
+    background: rgba(0,0,0,0.5); border: 2px solid var(--primary-gold);
+    color: var(--primary-gold); border-radius: 50%; width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; cursor: pointer; display: none; /* Hidden by default */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, background, color;
+    transform: translateZ(0);
+}
+#exit-btn:hover { 
+    background: var(--primary-gold); 
+    color: #000; 
+    transform: rotate(90deg) translateZ(0); 
+}
+
+
+/* --- NEW ALBUM BOOK OVERLAY --- */
+#album-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000;
+    background: linear-gradient(135deg, #1a0b0b 0%, #3a0d0d 100%);
+    display: none; opacity: 0; transition: opacity 0.5s ease;
+    flex-direction: column; align-items: center; justify-content: center;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+#album-overlay.show { display: flex; opacity: 1; }
+
+.bg-pattern {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.1;
+    background-image:  radial-gradient(#D32F2F 1px, transparent 1px), radial-gradient(#FFD700 1px, transparent 1px);
+    background-size: 50px 50px; background-position: 0 0, 25px 25px;
+}
+.floating-icon { 
+    position: absolute; 
+    font-size: 3rem; 
+    animation: floatIcon 6s ease-in-out infinite; 
+    opacity: 0.3;
+    will-change: transform;
+    transform: translateZ(0);
+}
+@keyframes floatIcon { 
+    0%,100%{transform:translateY(0) rotate(0deg) translateZ(0);} 
+    50%{transform:translateY(-20px) rotate(10deg) translateZ(0);} 
+}
+
+.close-album-btn {
+    position: absolute; top: 30px; right: 30px; 
+    background: none; border: 2px solid #fff; color: #fff; width: 50px; height: 50px;
+    border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 3010;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    display: flex; align-items: center; justify-content: center;
+    will-change: transform, background, border-color;
+    transform: translateZ(0);
+}
+.close-album-btn:hover { 
+    background: #D32F2F; 
+    border-color: #D32F2F; 
+    transform: rotate(90deg) translateZ(0); 
+}
+
+/* THE BOOK CONTAINER */
+#book-container {
+    position: relative; width: 340px; height: 500px; z-index: 3005;
+    perspective: 1500px; 
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: width, height;
+    transform: translateZ(0);
+}
+#book-container.opened { width: 700px; height: 500px; }
+
+/* COVER STATE */
+#book-cover {
+    position: absolute; top:0; left:0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+    border: 8px solid var(--primary-gold); border-radius: 15px 25px 25px 15px;
+    box-shadow: 15px 20px 50px rgba(0,0,0,0.6);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: var(--primary-gold); cursor: pointer;
+    transform-origin: left center; 
+    transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1), opacity 0.3s ease;
+    z-index: 2;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    box-sizing: border-box;
+}
+#book-container.opened #book-cover { 
+    transform: rotateY(-180deg) translateZ(0); 
+    opacity: 0; 
+    pointer-events: none;
+}
+
+/* PAGES STATE (INSIDE) */
+#book-pages {
+    position: absolute; top:0; right:0; width: 100%; height: 100%;
+    background: #fffdf0; /* Paper color */
+    background-image: linear-gradient(#f0f0f0 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-radius: 15px; border: 8px solid #d4af37;
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.1), 10px 10px 30px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.5s ease 0.3s; z-index: 1;
+    padding: 20px; box-sizing: border-box;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+#book-container.opened #book-pages { opacity: 1; }
+
+.photo-frame {
+    width: 85%; height: 75%; 
+    background: #fff; 
+    padding: 10px 10px 40px 10px; /* Polaroid style */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+    transform: rotate(-2deg) translateZ(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; justify-content: center; align-items: center;
+    will-change: transform;
+}
+.photo-frame:hover { transform: rotate(0deg) scale(1.02) translateZ(0); }
+
+#current-photo { width: 100%; height: 100%; object-fit: cover; border: 1px solid #eee; }
+
+/* --- CHRISTMAS CARD --- */
+#christmas-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.christmas-card-hidden {
+    display: none !important;
+    opacity: 0;
+}
+
+.christmas-card-visible {
+    display: flex !important;
+    animation: cardFadeIn 0.8s ease-out forwards;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+    }
+}
+
+.card-content {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, #fffdf0 0%, #ffffff 50%, #f0f8ff 100%);
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    border: 6px solid #D32F2F;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 
+                0 0 30px rgba(255, 215, 0, 0.4),
+                inset 0 0 20px rgba(255, 215, 0, 0.1);
+    max-width: 90%;
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+}
+
+.card-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    animation: bounceIcon 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+}
+
+@keyframes bounceIcon {
+    0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
+    50% { transform: translateY(-10px) scale(1.1) translateZ(0); }
+}
+
+.card-title {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 2.5rem;
+    color: #D32F2F;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),
+                 0 0 20px rgba(255, 215, 0, 0.6);
+    animation: titleGlow 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.6); }
+    50% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.5); }
+}
+
+.card-wish {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.3rem;
+    color: #0f2d1e;
+    line-height: 1.6;
+    margin: 20px 0;
+    font-weight: 600;
+    animation: textFadeIn 1s ease-out;
+}
+
+@keyframes textFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateZ(0);
+    }
+}
+
+.card-decoration {
+    font-size: 2rem;
+    margin-top: 20px;
+    letter-spacing: 15px;
+    animation: decorationFloat 3s ease-in-out infinite;
+}
+
+@keyframes decorationFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg) translateZ(0); }
+    50% { transform: translateY(-8px) rotate(5deg) translateZ(0); }
+}
+
+/* Snowflakes animation */
+.card-snowflakes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.card-snowflakes .snowflake {
+    position: absolute;
+    color: #fff;
+    font-size: 1.5rem;
+    opacity: 0.8;
+    animation: snowflakeFall linear infinite;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+.card-snowflakes .snowflake:nth-child(1) {
+    left: 10%;
+    animation-duration: 3s;
+    animation-delay: 0s;
+}
+
+.card-snowflakes .snowflake:nth-child(2) {
+    left: 25%;
+    animation-duration: 4s;
+    animation-delay: 0.5s;
+}
+
+.card-snowflakes .snowflake:nth-child(3) {
+    left: 40%;
+    animation-duration: 3.5s;
+    animation-delay: 1s;
+}
+
+.card-snowflakes .snowflake:nth-child(4) {
+    left: 55%;
+    animation-duration: 4.5s;
+    animation-delay: 1.5s;
+}
+
+.card-snowflakes .snowflake:nth-child(5) {
+    left: 70%;
+    animation-duration: 3.8s;
+    animation-delay: 0.8s;
+}
+
+.card-snowflakes .snowflake:nth-child(6) {
+    left: 85%;
+    animation-duration: 4.2s;
+    animation-delay: 1.2s;
+}
+
+@keyframes snowflakeFall {
+    0% {
+        transform: translateY(-100px) translateX(0) rotate(0deg) translateZ(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(500px) translateX(30px) rotate(360deg) translateZ(0);
+        opacity: 0;
+    }
+}
+
+/* Sparkles animation */
+.card-sparkles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.card-sparkles .sparkle {
+    position: absolute;
+    color: #FFD700;
+    font-size: 1.2rem;
+    animation: sparkleTwinkle 2s ease-in-out infinite;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 1);
+}
+
+.card-sparkles .sparkle:nth-child(1) {
+    top: 15%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.card-sparkles .sparkle:nth-child(2) {
+    top: 30%;
+    right: 25%;
+    animation-delay: 0.5s;
+}
+
+.card-sparkles .sparkle:nth-child(3) {
+    bottom: 25%;
+    left: 30%;
+    animation-delay: 1s;
+}
+
+.card-sparkles .sparkle:nth-child(4) {
+    bottom: 15%;
+    right: 20%;
+    animation-delay: 1.5s;
+}
+
+@keyframes sparkleTwinkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.5) translateZ(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2) translateZ(0);
+    }
+}
+
+/* Navigation */
+.nav-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%) translateZ(0);
+    font-size: 2rem; color: #fff; cursor: pointer;
+    width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5;
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    will-change: transform, background;
+}
+.nav-arrow:hover { 
+    background: #8B0000; 
+    transform: translateY(-50%) scale(1.1) translateZ(0); 
+}
+.nav-left { left: -30px; }
+.nav-right { right: -30px; }
+
+#page-info-container {
+    margin-top: 15px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end;
+    padding: 0 20px; box-sizing: border-box;
+}
+#page-counter {
+    color: #8B0000; font-weight: bold; font-family: 'Mountains of Christmas', cursive; font-size: 1.5rem;
+}
+
+/* AUDIO VISUALIZER CANVAS */
+#visualizer-canvas {
+    width: 150px; height: 40px; 
+    /* border-bottom: 2px solid #ddd; */
+}
+
+/* Decoration items within cover/pages */
+.cover-pattern { position: absolute; width: 90%; height: 90%; border: 2px dashed rgba(255, 215, 0, 0.5); pointer-events: none; }
+.cover-title { font-family: 'Mountains of Christmas', cursive; font-size: 4rem; margin: 0; line-height: 1; }
+.cover-brand { font-family: 'Quicksand', sans-serif; font-size: 1.5rem; letter-spacing: 5px; margin-top: 10px; font-weight: bold; }
+.cover-icon { font-size: 3rem; margin-bottom: 20px; }
+.spine { position: absolute; left: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to right, #600000, #8B0000); border-radius: 15px 0 0 15px; border-right: 2px solid rgba(0,0,0,0.2); }
+
+
+/* --- HUD & WIDGETS --- */
+#ui-layer { 
+    position: fixed; bottom: 30px; left: 0; width: 100%; z-index: 100; 
+    pointer-events: none; display: flex; justify-content: center; 
+    opacity: 0; transition: opacity 1s ease;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+.control-dock { 
+    background: var(--glass-bg); 
+    backdrop-filter: blur(12px); 
+    border: 1px solid var(--glass-border); 
+    padding: 15px 30px; border-radius: 20px; 
+    display: flex; gap: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: translateZ(0);
+}
+.gesture-item { 
+    display: flex; flex-direction: column; align-items: center; color: #fff; 
+    opacity: 0.6; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity, color;
+    transform: translateZ(0);
+}
+.gesture-item.active { 
+    opacity: 1; 
+    transform: scale(1.2) translateZ(0); 
+    color: var(--primary-gold); 
+    text-shadow: 0 0 10px var(--primary-gold); 
+}
+.gesture-icon { font-size: 1.8rem; margin-bottom: 5px; }
+
+#camera-widget { 
+    position: fixed; top: 20px; right: 20px; z-index: 100; 
+    width: 160px; height: 120px; border-radius: 15px; overflow: hidden; 
+    border: 2px solid rgba(255, 215, 0, 0.3); background: #000; 
+    transform: scaleX(-1) translateZ(0); 
+    opacity: 0; 
+    transition: opacity 1s ease;
+    will-change: opacity;
+}
+#camera-preview { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+    transform: translateZ(0);
+}
+
+/* --- EFFECTS --- */
+#flash-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: #FFF; opacity: 0; pointer-events: none; z-index: 6000;
+    will-change: opacity;
+    transform: translateZ(0);
+}
+@keyframes flashAnim { 
+    0% { opacity: 1; } 
+    100% { opacity: 0; } 
+}
+
+#countdown-overlay { 
+    position: fixed; top: 50%; left: 50%; 
+    transform: translate(-50%, -50%) translateZ(0); 
+    font-size: 10rem; font-weight: bold; color: #FFF; 
+    text-shadow: 0 0 30px #D32F2F; z-index: 5000; display: none; 
+    font-family: 'Quicksand', sans-serif;
+    will-change: transform, opacity;
+}
+.count-anim { animation: pulseCount 0.8s ease-out forwards; }
+@keyframes pulseCount { 
+    0% { transform: translate(-50%, -50%) scale(0.5) translateZ(0); opacity: 0; } 
+    50% { transform: translate(-50%, -50%) scale(1.2) translateZ(0); opacity: 1; } 
+    100% { transform: translate(-50%, -50%) scale(1) translateZ(0); opacity: 0; } 
+}
+
+#polaroid-container { 
+    position: fixed; top: 50%; left: 50%; 
+    transform: translate(-50%, -50%) scale(0) translateZ(0); 
+    background: #FFF; padding: 15px 15px 50px 15px; 
+    box-shadow: 0 10px 50px rgba(0,0,0,0.8); z-index: 5500; 
+    pointer-events: none; opacity: 0;
+    will-change: transform, opacity;
+}
+#polaroid-img { 
+    width: 300px; height: auto; display: block; border: 1px solid #ddd;
+    transform: translateZ(0);
+}
+.polaroid-anim { animation: polaroidSnap 2.5s ease-in-out forwards; }
+@keyframes polaroidSnap { 
+    0% { transform: translate(-50%, -50%) scale(0.2) rotate(10deg) translateZ(0); opacity: 0; } 
+    20% { transform: translate(-50%, -50%) scale(1.1) rotate(-5deg) translateZ(0); opacity: 1; } 
+    100% { transform: translate(-50%, 600px) scale(0.2) rotate(20deg) translateZ(0); opacity: 0; } 
+}
+
+.copyright { 
+    position: fixed; bottom: 10px; right: 20px; 
+    color: rgba(255,255,255,0.2); font-size: 10px; z-index: 50; 
+}
+@keyframes floatText { 
+    0%, 100% { transform: translateY(0) translateZ(0); } 
+    50% { transform: translateY(-10px) translateZ(0); } 
+}

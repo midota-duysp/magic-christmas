@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Christmas - Gift Edition</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="loading-screen"><span class="loader"></span><p>Loading Magic...</p></div>
+    <div id="flash-overlay"></div>
+    <div id="countdown-overlay">3</div>
+    <div id="polaroid-container"><img id="polaroid-img" src=""></div>
+
+    <button id="exit-btn" onclick="exitSystem()"><i class="fas fa-times"></i></button>
+
+    <div id="wish-modal" onclick="closeGiftBox(event)">
+        <div class="wish-card" onclick="event.stopPropagation()">
+            <div class="wish-decoration" style="top: -20px; left: -20px;">🎄</div>
+            <div class="wish-decoration" style="bottom: -20px; right: -20px;">🎅</div>
+            <i class="fas fa-gift" style="font-size: 3rem; color: #D32F2F; margin-bottom: 20px;"></i>
+            <p id="wish-text-content" class="wish-content">
+                ...
+            </p>
+            <button class="wish-close" onclick="closeGiftBox()">Thank you ❤️</button>
+        </div>
+    </div>
+
+    <div id="album-overlay">
+        <div class="bg-pattern"></div>
+        <div class="floating-icon" style="top: 10%; left: 10%;">🎅</div>
+        <div class="floating-icon" style="top: 20%; right: 15%; animation-delay: 1s;">🦌</div>
+        <div class="floating-icon" style="bottom: 15%; left: 20%; animation-delay: 2s;">🎁</div>
+        <div class="floating-icon" style="bottom: 10%; right: 10%; animation-delay: 0.5s;">🎄</div>
+        <div class="floating-icon" style="top: 50%; left: 5%; animation-delay: 1.5s;">❄️</div>
+
+        <button class="close-album-btn" onclick="closeAlbumOverlay()"><i class="fas fa-times"></i></button>
+
+        <div id="book-container">
+            <div id="book-pages">
+                <div class="photo-frame" id="photo-frame-container">
+                    <img id="current-photo" src="" alt="Christmas Memory">
+                </div>
+                
+                <div id="christmas-card" class="christmas-card-hidden">
+                    <div class="card-snowflakes">
+                        <span class="snowflake">❄</span>
+                        <span class="snowflake">❄</span>
+                        <span class="snowflake">❄</span>
+                        <span class="snowflake">❄</span>
+                        <span class="snowflake">❄</span>
+                        <span class="snowflake">❄</span>
+                    </div>
+                    <div class="card-sparkles">
+                        <span class="sparkle">✨</span>
+                        <span class="sparkle">✨</span>
+                        <span class="sparkle">✨</span>
+                        <span class="sparkle">✨</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-icon">🎄</div>
+                        <h2 class="card-title">Giáng Sinh Vui Vẻ!</h2>
+                        <p class="card-wish" id="card-wish-text">Chúc bạn một mùa Giáng sinh an lành và ấm áp bên người thân yêu!</p>
+                        <div class="card-decoration">🎅<img src="log_green.png" style="width: 45px" alt=""> 🎁</div>
+                    </div>
+                </div>
+                
+                <i class="fas fa-chevron-left nav-arrow nav-left" onclick="changePage(-1)"></i>
+                <i class="fas fa-chevron-right nav-arrow nav-right" onclick="changePage(1)"></i>
+                
+                <div id="page-info-container">
+                    <canvas id="visualizer-canvas" width="150" height="40"></canvas>
+                    <div id="page-counter">1 / 1</div>
+                </div>
+            </div>
+
+            <div id="book-cover" onclick="openBook()">
+                <div class="spine"></div>
+                <div class="cover-pattern"></div>
+                <div class="cover-icon">🎄</div>
+                <h1 class="cover-title">2025</h1>
+                <div class="cover-brand">MIDOTA</div>
+                <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">Click to Open Album</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="welcome-layer">
+        <h1 class="title-main">Magic Christmas × <img src="./log_green.png" style="width: 100px;" alt=""></h1>
+        <p class="subtitle">Select your atmosphere & Start</p>
+        
+        <div class="music-settings">
+            <div class="music-card active" onclick="selectMusic(0)">
+                <i class="fas fa-bell"></i>
+                <span>Jingle Bells</span>
+            </div>
+            <div class="music-card" onclick="selectMusic(1)">
+                <i class="fas fa-snowflake"></i>
+                <span>Jingle Bells(JP)</span>
+            </div>
+            <div class="music-card" onclick="selectMusic(2)">
+                <i class="fas fa-music"></i>
+                <span>Special edition</span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="magic-btn secondary" onclick="showAlbumOverlay()">Album</button>
+            <button class="magic-btn" onclick="startSystem()">Enter Magic</button>
+        </div>
+
+        <div class="gift-container" onclick="openGiftBox()">
+            <i class="fas fa-gift gift-icon"></i>
+            <span class="gift-label">Nhận quà Noel</span>
+        </div>
+    </div>
+
+    <div id="ui-layer">
+        <div class="control-dock">
+            <div class="gesture-item" id="icon-tree"><div class="gesture-icon">✊</div><span>Tree</span></div>
+            <div class="gesture-item" id="icon-explode"><div class="gesture-icon">🖐</div><span>Pop</span></div>
+            <div class="gesture-item" id="icon-heart"><div class="gesture-icon">🫶</div><span>Love</span></div>
+            <div class="gesture-item" id="icon-view"><div class="gesture-icon">👌</div><span>View</span></div>
+            <div class="gesture-item" id="icon-photo"><div class="gesture-icon">✌️</div><span>Selfie</span></div>
+        </div>
+    </div>
+
+    <div id="camera-widget"><canvas id="camera-preview"></canvas></div>
+    <div id="canvas-container"></div>
+    <video class="input_video" style="display:none"></video>
+
+    <script src="script.js"></script>
+</body>
+</html>
